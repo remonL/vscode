@@ -112,6 +112,7 @@ export class InlayHintsController implements IEditorContribution {
 	private readonly _getInlayHintsDelays = new LanguageFeatureRequestDelays(InlayHintsProviderRegistry, 25, 500);
 	private readonly _cache = new InlayHintsCache();
 	private readonly _decorationsMetadata = new Map<string, { hint: InlayHint, classNameRef: IDisposable }>();
+	private readonly _ruleFactory = new DynamicCssRules(this._editor);
 
 	constructor(
 		private readonly _editor: ICodeEditor
@@ -208,8 +209,6 @@ export class InlayHintsController implements IEditorContribution {
 		return result;
 	}
 
-	private readonly ruleFactory = new DynamicCssRules(this._editor);
-
 	private _updateHintsDecorators(ranges: Range[], hints: InlayHint[]): void {
 
 		const { fontSize, fontFamily } = this._getLayoutInfo();
@@ -239,7 +238,7 @@ export class InlayHintsController implements IEditorContribution {
 				color = themeColorFromId(editorInlayHintForeground);
 			}
 
-			const classNameRef = this.ruleFactory.createClassNameRef({
+			const classNameRef = this._ruleFactory.createClassNameRef({
 				fontSize: `${fontSize}px`,
 				margin: `0px ${marginAfter}px 0px ${marginBefore}px`,
 				fontFamily: `var(${fontFamilyVar}), ${EDITOR_FONT_DEFAULTS.fontFamily}`,
