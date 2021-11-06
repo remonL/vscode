@@ -318,7 +318,7 @@ export class LocalProcessExtensionHost implements IExtensionHost {
 
 				// Print out extension host output
 				onDebouncedOutput(output => {
-					const inspectorUrlMatch = output.data && output.data.match(/ws:\/\/([^\s]+:(\d+)\/[^\s]+)/);
+					const inspectorUrlMatch = output.data && output.data.match(/wss?:\/\/([^\s]+:(\d+)\/[^\s]+)/);
 					if (inspectorUrlMatch) {
 						if (!this._environmentService.isBuilt && !this._isExtensionDevTestFromCli) {
 							console.log(`%c[Extension Host] %cdebugger inspector at chrome-devtools://devtools/bundled/inspector.html?experiments=true&v8only=true&ws=${inspectorUrlMatch[1]}`, 'color: blue', 'color:');
