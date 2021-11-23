@@ -72,7 +72,7 @@ async function rimrafMove(path: string): Promise<void> {
 }
 
 async function rimrafUnlink(path: string): Promise<void> {
-	return Promises.rmdir(path, { recursive: true, maxRetries: 3 });
+	return promisify(fs.rm)(path, { force: true, recursive: true, maxRetries: 3 });
 }
 
 export function rimrafSync(path: string): void {
@@ -80,7 +80,7 @@ export function rimrafSync(path: string): void {
 		throw new Error('rimraf - will refuse to recursively delete root');
 	}
 
-	fs.rmdirSync(path, { recursive: true });
+	fs.rmSync(path, { force: true, recursive: true });
 }
 
 //#endregion
@@ -680,7 +680,7 @@ export const Promises = new class {
 	get mkdir() { return promisify(fs.mkdir); }
 
 	get unlink() { return promisify(fs.unlink); }
-	get rmdir() { return promisify(fs.rmdir); }
+	get rmdir() { return promisify(fs.rm); }
 
 	get realpath() { return promisify(fs.realpath); }
 

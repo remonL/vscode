@@ -30,7 +30,22 @@
 		"ms-vscode.remotehub",
 		"ms-vscode.remotehub-insiders",
 		"GitHub.remotehub",
-		"GitHub.remotehub-insiders"
+		"GitHub.remotehub-insiders",
+		"GitHub.vscode-pull-request-github-insiders",
+		"GitHub.vscode-pull-request-github",
+		"github.codespaces",
+		"ms-python.python",
+		"ms-toolsai.jupyter",
+		"ms-vscode.js-debug-nightly",
+		"ms-vscode.js-debug",
+		"ms-vscode.lsif-browser",
+		"ms-vscode.vscode-js-profile-flame",
+		"ms-vscode.vscode-js-profile-table",
+		"ms-vscode.vscode-selfhost-test-provider",
+		"ms-vsliveshare.vsliveshare",
+		"github.copilot",
+		"dbaeumer.vscode-eslint",
+		"genuitecllc.codetogether"
 	],
 	"builtInExtensions": [
 		{
