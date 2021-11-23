@@ -47,24 +47,12 @@ jobs:
     name: Build linux-${{ matrix.vscode_arch }}
     if: github.event.inputs.commit || github.event.workflow_run.conclusion == 'success'
     steps:
-        # Get the release commit from the Insiders workflow
-      - name: Download artifact
-        if: github.event.workflow_run.conclusion == 'success'
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: insiders.yml
-          name: release_commit
-      - name: Read release commit from file
-        if: github.event.workflow_run.conclusion == 'success'
-        run: |
-          echo "RELEASE_COMMIT=$(cat __release_commit.txt)" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
         with:
           repository: ${{ github.repository_owner }}/vscode
           ref: ${{ env.RELEASE_COMMIT }}
           path: vscode
-          token: ${{ secrets.VSCODE_GITHUB_TOKEN }}
 
       - uses: actions/setup-node@v2
         with:
