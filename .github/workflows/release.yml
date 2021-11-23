@@ -168,9 +168,8 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/vscode
           target_commitish: ${{ env.RELEASE_COMMIT }}
-          body: OpenVSCode Server v${{ env.VERSION }}
+          body: vscode v${{ env.VERSION }}
           tag_name: vscode-v${{ env.VERSION }}
-          token: ${{ secrets.VSCODE_GITHUB_TOKEN }}
           files: artifacts/**/*.tar.gz
 
       - name: Delete previous insiders release
@@ -181,8 +180,7 @@ jobs:
           keep_latest: 0
           delete_tags: true
           delete_tag_pattern: vscode-insiders
-        env:
-          GITHUB_TOKEN: ${{ secrets.VSCODE_GITHUB_TOKEN }}
+
       - name: Sleep
         if: env.QUALITY == 'insiders'
         run: sleep 30s
@@ -192,8 +190,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/vscode
           target_commitish: ${{ env.RELEASE_COMMIT }}
-          body: OpenVSCode Server Insiders v${{ env.VERSION }}
+          body: vscode Insiders v${{ env.VERSION }}
           tag_name: vscode-insiders-v${{ env.VERSION }}
           prerelease: true
-          token: ${{ secrets.VSCODE_GITHUB_TOKEN }}
           files: artifacts/**/*.tar.gz
