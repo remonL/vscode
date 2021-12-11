@@ -1,0 +1,3 @@
+tasks:
+  - init: yarn install && yarn run compile
+    command: yarn run watch
