@@ -52,7 +52,7 @@
 				}
 			},
 			"isOnlyProductionDependency": true,
-			"version": "14.16.0"
+			"version": "16.13.1"
 		},
 		{
 			"component": {

@@ -43,6 +43,9 @@ jobs:
         - vscode_arch: x64
           npm_arch: x64
           image: vscodium/vscodium-linux-build-agent:bionic-x64
+        - vscode_arch: arm64
+          npm_arch: arm64
+          image: vscodium/vscodium-linux-build-agent:stretch-arm64
 
     name: Build linux-${{ matrix.vscode_arch }}
     if: github.event.inputs.commit || github.event.workflow_run.conclusion == 'success'
