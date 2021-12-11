@@ -45,7 +45,7 @@ jobs:
           image: vscodium/vscodium-linux-build-agent:bionic-x64
         - vscode_arch: arm64
           npm_arch: arm64
-          image: vscodium/vscodium-linux-build-agent:stretch-arm64
+          image: vscodium/vscodium-linux-build-agent:buster-arm64
 
     name: Build linux-${{ matrix.vscode_arch }}
     if: github.event.inputs.commit || github.event.workflow_run.conclusion == 'success'
@@ -120,14 +120,6 @@ jobs:
           set -e
           yarn --cwd test/smoke compile
           yarn --cwd test/integration/browser compile
-
-      - name: Run integration tests
-        if: matrix.vscode_arch == 'x64'
-        working-directory: ./vscode
-        run: |
-          set -e
-          VSCODE_REMOTE_SERVER_PATH="$GITHUB_WORKSPACE/vscode-reh-web-linux-${{ matrix.vscode_arch }}" \
-          ./resources/server/test/test-web-integration.sh --browser chromium
 
       - name: Bundle tarfile
         run: |
