@@ -45,7 +45,9 @@
 		"ms-vsliveshare.vsliveshare",
 		"github.copilot",
 		"dbaeumer.vscode-eslint",
-		"genuitecllc.codetogether"
+		"genuitecllc.codetogether",
+		"vscode.microsoft-authentication",
+		"vscode.github"
 	],
 	"builtInExtensions": [
 		{
