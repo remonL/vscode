@@ -64,32 +64,8 @@ jobs:
       - name: Install Yarn
         run: npm install -g yarn && node -v
 
-      - name: Compute node modules cache key
-        working-directory: ./vscode
-        id: nodeModulesCacheKey
-        run: echo "::set-output name=value::$(node build/azure-pipelines/common/computeNodeModulesCacheKey.js)"
-      - name: Cache node modules
-        id: cacheNodeModules
-        uses: actions/cache@v2
-        with:
-          path: "vscode/**/node_modules"
-          key: linux-${{ matrix.npm_arch }}-cacheNodeModules14-${{ steps.nodeModulesCacheKey.outputs.value }}
-          restore-keys: linux-${{ matrix.npm_arch }}-cacheNodeModules14-
-      - name: Get yarn cache directory path
-        working-directory: ./vscode
-        id: yarnCacheDirPath
-        if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn directory
-        if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarnCacheDirPath.outputs.dir }}
-          key: linux-${{ matrix.npm_arch }}-yarnCacheDir-${{ steps.nodeModulesCacheKey.outputs.value }}
-          restore-keys: linux-${{ matrix.npm_arch }}-yarnCacheDir-
       - name: Execute yarn
         working-directory: ./vscode
-        if: ${{ steps.cacheNodeModules.outputs.cache-hit != 'true' }}
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           ELECTRON_SKIP_BINARY_DOWNLOAD: 1
