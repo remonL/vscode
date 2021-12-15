@@ -62,7 +62,7 @@ jobs:
           node-version: 16
 
       - name: Install Yarn
-        run: npm install -g yarn
+        run: npm install -g yarn && node -v
 
       - name: Compute node modules cache key
         working-directory: ./vscode
@@ -100,7 +100,7 @@ jobs:
             export VSCODE_REMOTE_CC=$(which gcc-4.8)
             export VSCODE_REMOTE_CXX=$(which g++-4.8)
           fi
-
+          node -v
           yarn --frozen-lockfile --network-timeout 180000
 
       - name: Prepare for distribution
