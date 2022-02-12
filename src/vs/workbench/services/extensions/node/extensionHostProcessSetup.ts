@@ -7,7 +7,7 @@ import * as nativeWatchdog from 'native-watchdog';
 import * as net from 'net';
 import * as minimist from 'minimist';
 import * as performance from 'vs/base/common/performance';
-import { isPromiseCanceledError, onUnexpectedError } from 'vs/base/common/errors';
+import { isCancellationError, onUnexpectedError } from 'vs/base/common/errors';
 import { Event } from 'vs/base/common/event';
 import { IMessagePassingProtocol } from 'vs/base/parts/ipc/common/ipc';
 import { PersistentProtocol, ProtocolConstants, BufferedEmitter } from 'vs/base/parts/ipc/common/ipc.net';
@@ -30,7 +30,7 @@ import 'vs/workbench/api/node/extHost.node.services';
 interface ParsedExtHostArgs {
 	uriTransformerPath?: string;
 	skipWorkspaceStorageLock?: boolean;
-	useHostProxy?: string;
+	useHostProxy?: 'true' | 'false'; // use a string, as undefined is also a valid value
 }
 
 // workaround for https://github.com/microsoft/vscode/issues/85490
@@ -47,11 +47,11 @@ interface ParsedExtHostArgs {
 const args = minimist(process.argv.slice(2), {
 	string: [
 		'uriTransformerPath',
-		'useHostProxy'
+		'useHostProxy' // 'true' | 'false' | undefined
 	],
 	boolean: [
 		'skipWorkspaceStorageLock'
-	]
+	],
 }) as ParsedExtHostArgs;
 
 // With Electron 2.x and node.js 8.x the "natives" module
@@ -65,7 +65,7 @@ const args = minimist(process.argv.slice(2), {
 
 	Module._load = function (request: string) {
 		if (request === 'natives') {
-			throw new Error('Either the extension or a NPM dependency is using the "natives" node module which is unsupported as it can cause a crash of the extension host. Click [here](https://go.microsoft.com/fwlink/?linkid=871887) to find out more');
+			throw new Error('Either the extension or an NPM dependency is using the [unsupported "natives" node module](https://go.microsoft.com/fwlink/?linkid=871887).');
 		}
 
 		return originalLoad.apply(this, arguments);
@@ -302,7 +302,7 @@ export async function startExtensionHostProcess(): Promise<void> {
 			if (idx >= 0) {
 				promise.catch(e => {
 					unhandledPromises.splice(idx, 1);
-					if (!isPromiseCanceledError(e)) {
+					if (!isCancellationError(e)) {
 						console.warn(`rejected promise not handled within 1 second: ${e}`);
 						if (e && e.stack) {
 							console.warn(`stack trace: ${e.stack}`);
