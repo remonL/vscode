@@ -829,7 +829,7 @@ onDomReady(() => {
 		newFrame.setAttribute('id', 'pending-frame');
 		newFrame.setAttribute('frameborder', '0');
 
-		const sandboxRules = new Set(['allow-same-origin', 'allow-pointer-lock']);
+		const sandboxRules = new Set(['allow-same-origin', 'allow-scripts', 'allow-forms', 'allow-pointer-lock']);
 		if (options.allowScripts) {
 			sandboxRules.add('allow-scripts');
 			sandboxRules.add('allow-downloads');
