@@ -151,7 +151,7 @@ class RemoteAuthoritiesImpl {
 		}
 		return URI.from({
 			scheme: platform.isWeb ? this._preferredWebSchema : Schemas.vscodeRemoteResource,
-			authority: typeof window === 'undefined' ? `${host}:${port}` : `${window.location.host}:${window.location.port}`,
+			authority: typeof window === 'undefined' ? `${host}:${port}` : `${window.location.hostname}:${window.location.port}`,
 			path: `/vscode-remote-resource`,
 			query
 		});
