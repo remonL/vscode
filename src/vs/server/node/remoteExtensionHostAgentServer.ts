@@ -6,6 +6,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as http from 'http';
+import * as https from 'https';
 import * as net from 'net';
 import { performance } from 'perf_hooks';
 import * as url from 'url';
@@ -155,6 +156,34 @@ export class RemoteExtensionHostAgentServer extends Disposable implements IServe
 			return serveFile(this._logService, req, res, filePath, responseHeaders);
 		}
 
+		if (req.method === 'GET' && /^\/proxy\/.+$/.test(req.url)) {
+			const pathList = req.url.split('/');
+
+			const options = {
+				hostname: pathList[2],
+				path: `/${pathList.slice(3).join('/')}`,
+				method: req.method,
+				rejectUnauthorized: false,
+			};
+
+			const proxy = https.request(
+				options,
+				function (_res: http.IncomingMessage) {
+					res.writeHead(res.statusCode, res.getHeaders());
+
+					_res.pipe(res, {
+						end: true,
+					});
+				}
+			);
+
+			req.pipe(proxy, {
+				end: true,
+			});
+
+			return;
+		}
+		
 		// workbench web UI
 		if (this._webClientServer) {
 			this._webClientServer.handle(req, res, parsedUrl);
