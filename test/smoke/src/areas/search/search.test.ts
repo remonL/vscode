@@ -19,15 +19,6 @@ export function setup(logger: Logger) {
 			retry(async () => cp.execSync('git reset --hard HEAD --quiet', { cwd: app.workspacePathOrFolder }), 0, 5);
 		});
 
-		// https://github.com/microsoft/vscode/issues/124146
-		it.skip /* https://github.com/microsoft/vscode/issues/124335 */('has a tooltp with a keybinding', async function () {
-			const app = this.app as Application;
-			const tooltip: string = await app.workbench.search.getSearchTooltip();
-			if (!/Search \(.+\)/.test(tooltip)) {
-				throw Error(`Expected search tooltip to contain keybinding but got ${tooltip}`);
-			}
-		});
-
 		it('searches for body & checks for correct result number', async function () {
 			const app = this.app as Application;
 			await app.workbench.search.openSearchViewlet();
@@ -59,7 +50,7 @@ export function setup(logger: Logger) {
 			const app = this.app as Application;
 
 			await app.workbench.search.searchFor('body');
-			await app.workbench.search.waitForResultText('16 results in 5 files');
+			await app.workbench.search.waitForResultText('6 results in 3 files');
 			await app.workbench.search.expandReplace();
 			await app.workbench.search.setReplaceText('ydob');
 			await app.workbench.search.replaceFileMatch('app.js', '12 results in 4 files');

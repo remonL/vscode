@@ -2501,7 +2501,7 @@ export interface IEditorInlayHintsOptions {
 	 * Enable the inline hints.
 	 * Defaults to true.
 	 */
-	enabled?: boolean;
+	enabled?: 'on' | 'off' | 'offUnlessPressed' | 'onUnlessPressed';
 
 	/**
 	 * Font size of inline hints.
@@ -2514,6 +2514,13 @@ export interface IEditorInlayHintsOptions {
 	 * Defaults to editor font family.
 	 */
 	fontFamily?: string;
+
+	/**
+	 * The display style to render inlay hints with.
+	 * Compact mode disables the borders and padding around the inlay hint.
+	 * Defaults to 'standard'.
+	 */
+	displayStyle: 'standard' | 'compact';
 }
 
 /**
@@ -2524,25 +2531,42 @@ export type EditorInlayHintsOptions = Readonly<Required<IEditorInlayHintsOptions
 class EditorInlayHints extends BaseEditorOption<EditorOption.inlayHints, IEditorInlayHintsOptions, EditorInlayHintsOptions> {
 
 	constructor() {
-		const defaults: EditorInlayHintsOptions = { enabled: true, fontSize: 0, fontFamily: '' };
+		const defaults: EditorInlayHintsOptions = { enabled: 'on', fontSize: 0, fontFamily: '', displayStyle: 'compact' };
 		super(
 			EditorOption.inlayHints, 'inlayHints', defaults,
 			{
 				'editor.inlayHints.enabled': {
-					type: 'boolean',
+					type: 'string',
 					default: defaults.enabled,
-					description: nls.localize('inlayHints.enable', "Enables the inlay hints in the editor.")
+					description: nls.localize('inlayHints.enable', "Enables the inlay hints in the editor."),
+					enum: ['on', 'onUnlessPressed', 'offUnlessPressed', 'off'],
+					markdownEnumDescriptions: [
+						nls.localize('editor.inlayHints.on', "Inlay hints are enabled"),
+						nls.localize('editor.inlayHints.onUnlessPressed', "Inlay hints are showing by default and hide when holding `Ctrl+Alt`"),
+						nls.localize('editor.inlayHints.offUnlessPressed', "Inlay hints are hidden by default and show when holding `Ctrl+Alt`"),
+						nls.localize('editor.inlayHints.off', "Inlay hints are disabled"),
+					],
 				},
 				'editor.inlayHints.fontSize': {
 					type: 'number',
 					default: defaults.fontSize,
-					markdownDescription: nls.localize('inlayHints.fontSize', "Controls font size of inlay hints in the editor. A default of 90% of `#editor.fontSize#` is used when the configured value is less than `5` or greater than the editor font size.")
+					markdownDescription: nls.localize('inlayHints.fontSize', "Controls font size of inlay hints in the editor. As default the `#editor.fontSize#` is used when the configured value is less than `5` or greater than the editor font size.")
 				},
 				'editor.inlayHints.fontFamily': {
 					type: 'string',
 					default: defaults.fontFamily,
 					markdownDescription: nls.localize('inlayHints.fontFamily', "Controls font family of inlay hints in the editor. When set to empty, the `#editor.fontFamily#` is used.")
 				},
+				// 'editor.inlayHints.displayStyle': {
+				// 	type: 'string',
+				// 	enum: ['standard', 'compact'],
+				// 	enumDescriptions: [
+				// 		nls.localize('inlayHints.displayStyle.standard', "Renders inlay hints with the default style."),
+				// 		nls.localize('inlayHints.displayStyle.compact', "Renders inlay hints without any padding, and removes the rounded borders."),
+				// 	],
+				// 	default: defaults.displayStyle,
+				// 	description: nls.localize('inlayHints.displayStyle', "Controls the display style of inlay hints.")
+				// }
 			}
 		);
 	}
@@ -2552,10 +2576,14 @@ class EditorInlayHints extends BaseEditorOption<EditorOption.inlayHints, IEditor
 			return this.defaultValue;
 		}
 		const input = _input as IEditorInlayHintsOptions;
+		if (typeof input.enabled === 'boolean') {
+			input.enabled = input.enabled ? 'on' : 'off';
+		}
 		return {
-			enabled: boolean(input.enabled, this.defaultValue.enabled),
+			enabled: stringSet<'on' | 'off' | 'offUnlessPressed' | 'onUnlessPressed'>(input.enabled, this.defaultValue.enabled, ['on', 'off', 'offUnlessPressed', 'onUnlessPressed']),
 			fontSize: EditorIntOption.clampedInt(input.fontSize, this.defaultValue.fontSize, 0, 100),
-			fontFamily: EditorStringOption.string(input.fontFamily, this.defaultValue.fontFamily)
+			fontFamily: EditorStringOption.string(input.fontFamily, this.defaultValue.fontFamily),
+			displayStyle: stringSet<'standard' | 'compact'>(input.displayStyle, this.defaultValue.displayStyle, ['standard', 'compact'])
 		};
 	}
 }
@@ -3659,7 +3687,7 @@ export interface IGuidesOptions {
 	 * Enable highlighting of the active indent guide.
 	 * Defaults to true.
 	 */
-	highlightActiveIndentation?: boolean;
+	highlightActiveIndentation?: boolean | 'always';
 }
 
 /**
@@ -3717,8 +3745,15 @@ class GuideOptions extends BaseEditorOption<EditorOption.guides, IGuidesOptions,
 					description: nls.localize('editor.guides.indentation', "Controls whether the editor should render indent guides.")
 				},
 				'editor.guides.highlightActiveIndentation': {
-					type: 'boolean',
+					type: ['boolean', 'string'],
+					enum: [true, 'always', false],
+					enumDescriptions: [
+						nls.localize('editor.guides.highlightActiveIndentation.true', "Highlights the active indent guide."),
+						nls.localize('editor.guides.highlightActiveIndentation.always', "Highlights the active indent guide even if bracket guides are highlighted."),
+						nls.localize('editor.guides.highlightActiveIndentation.false', "Do not highlight the active indent guide."),
+					],
 					default: defaults.highlightActiveIndentation,
+
 					description: nls.localize('editor.guides.highlightActiveIndentation', "Controls whether the editor should highlight the active indent guide.")
 				}
 			}
@@ -3736,7 +3771,7 @@ class GuideOptions extends BaseEditorOption<EditorOption.guides, IGuidesOptions,
 			highlightActiveBracketPair: boolean(input.highlightActiveBracketPair, this.defaultValue.highlightActiveBracketPair),
 
 			indentation: boolean(input.indentation, this.defaultValue.indentation),
-			highlightActiveIndentation: boolean(input.highlightActiveIndentation, this.defaultValue.highlightActiveIndentation),
+			highlightActiveIndentation: primitiveSet(input.highlightActiveIndentation, this.defaultValue.highlightActiveIndentation, [true, false, 'always']),
 		};
 	}
 }

@@ -74,6 +74,8 @@ import { IQuickInputService } from 'vs/platform/quickinput/common/quickInput';
 import { Event } from 'vs/base/common/event';
 import { IPaneCompositePartService } from 'vs/workbench/services/panecomposite/browser/panecomposite';
 import { UnsupportedExtensionsMigrationContrib } from 'vs/workbench/contrib/extensions/browser/unsupportedExtensionsMigrationContribution';
+import { isWeb } from 'vs/base/common/platform';
+import { ExtensionsCleaner } from 'vs/workbench/contrib/extensions/browser/extensionsCleaner';
 
 // Singletons
 registerSingleton(IExtensionsWorkbenchService, ExtensionsWorkbenchService);
@@ -198,9 +200,12 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
 					}
 				},
 				additionalProperties: false,
-				default: {
-					'pub.name': false
-				}
+				default: {},
+				defaultSnippets: [{
+					'body': {
+						'pub.name': false
+					}
+				}]
 			},
 			'extensions.experimental.affinity': {
 				type: 'object',
@@ -212,9 +217,12 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration)
 					}
 				},
 				additionalProperties: false,
-				default: {
-					'pub.name': 1
-				}
+				default: {},
+				defaultSnippets: [{
+					'body': {
+						'pub.name': 1
+					}
+				}]
 			},
 			[WORKSPACE_TRUST_EXTENSION_SUPPORT]: {
 				type: 'object',
@@ -1557,6 +1565,10 @@ workbenchRegistry.registerWorkbenchContribution(ExtensionDependencyChecker, Life
 workbenchRegistry.registerWorkbenchContribution(ExtensionEnablementWorkspaceTrustTransitionParticipant, LifecyclePhase.Restored);
 workbenchRegistry.registerWorkbenchContribution(ExtensionsCompletionItemsProvider, LifecyclePhase.Restored);
 workbenchRegistry.registerWorkbenchContribution(UnsupportedExtensionsMigrationContrib, LifecyclePhase.Eventually);
+if (isWeb) {
+	workbenchRegistry.registerWorkbenchContribution(ExtensionsCleaner, LifecyclePhase.Eventually);
+}
+
 
 // Running Extensions
 registerAction2(ShowRuntimeExtensionsAction);
