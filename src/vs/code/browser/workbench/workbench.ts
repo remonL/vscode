@@ -55,7 +55,7 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 	}
 
 	private _credentials: ICredential[] | undefined;
-	private get credentials(): ICredential[] {
+	private get credentials (): ICredential[] {
 		if (!this._credentials) {
 			try {
 				const serializedCredentials = window.localStorage.getItem(LocalStorageCredentialsProvider.CREDENTIALS_STORAGE_KEY);
@@ -74,15 +74,15 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		return this._credentials;
 	}
 
-	private save(): void {
+	private save (): void {
 		window.localStorage.setItem(LocalStorageCredentialsProvider.CREDENTIALS_STORAGE_KEY, JSON.stringify(this.credentials));
 	}
 
-	async getPassword(service: string, account: string): Promise<string | null> {
+	async getPassword (service: string, account: string): Promise<string | null> {
 		return this.doGetPassword(service, account);
 	}
 
-	private async doGetPassword(service: string, account?: string): Promise<string | null> {
+	private async doGetPassword (service: string, account?: string): Promise<string | null> {
 		for (const credential of this.credentials) {
 			if (credential.service === service) {
 				if (typeof account !== 'string' || account === credential.account) {
@@ -94,7 +94,7 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		return null;
 	}
 
-	async setPassword(service: string, account: string, password: string): Promise<void> {
+	async setPassword (service: string, account: string, password: string): Promise<void> {
 		this.doDeletePassword(service, account);
 
 		this.credentials.push({ service, account, password });
@@ -113,7 +113,7 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		}
 	}
 
-	async deletePassword(service: string, account: string): Promise<boolean> {
+	async deletePassword (service: string, account: string): Promise<boolean> {
 		const result = await this.doDeletePassword(service, account);
 
 		if (result && service === this.authService) {
@@ -127,7 +127,7 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		return result;
 	}
 
-	private async doDeletePassword(service: string, account: string): Promise<boolean> {
+	private async doDeletePassword (service: string, account: string): Promise<boolean> {
 		let found = false;
 
 		this._credentials = this.credentials.filter(credential => {
@@ -147,17 +147,17 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		return found;
 	}
 
-	async findPassword(service: string): Promise<string | null> {
+	async findPassword (service: string): Promise<string | null> {
 		return this.doGetPassword(service);
 	}
 
-	async findCredentials(service: string): Promise<Array<{ account: string; password: string }>> {
+	async findCredentials (service: string): Promise<Array<{ account: string; password: string }>> {
 		return this.credentials
 			.filter(credential => credential.service === service)
 			.map(({ account, password }) => ({ account, password }));
 	}
 
-	private async logout(service: string): Promise<void> {
+	private async logout (service: string): Promise<void> {
 		const queryValues: Map<string, string> = new Map();
 		queryValues.set('logout', String(true));
 		queryValues.set('service', service);
@@ -167,7 +167,7 @@ class LocalStorageCredentialsProvider implements ICredentialsProvider {
 		}, CancellationToken.None);
 	}
 
-	async clear(): Promise<void> {
+	async clear (): Promise<void> {
 		window.localStorage.removeItem(LocalStorageCredentialsProvider.CREDENTIALS_STORAGE_KEY);
 	}
 }
@@ -196,7 +196,7 @@ class LocalStorageURLCallbackProvider extends Disposable implements IURLCallback
 		super();
 	}
 
-	create(options: Partial<UriComponents> = {}): URI {
+	create (options: Partial<UriComponents> = {}): URI {
 		const id = ++LocalStorageURLCallbackProvider.REQUEST_ID;
 		const queryParams: string[] = [`vscode-reqid=${id}`];
 
@@ -222,7 +222,7 @@ class LocalStorageURLCallbackProvider extends Disposable implements IURLCallback
 		return URI.parse(window.location.href).with({ path: this._callbackRoute, query: queryParams.join('&') });
 	}
 
-	private startListening(): void {
+	private startListening (): void {
 		if (this.onDidChangeLocalStorageDisposable) {
 			return;
 		}
@@ -232,14 +232,14 @@ class LocalStorageURLCallbackProvider extends Disposable implements IURLCallback
 		this.onDidChangeLocalStorageDisposable = { dispose: () => window.removeEventListener('storage', fn) };
 	}
 
-	private stopListening(): void {
+	private stopListening (): void {
 		this.onDidChangeLocalStorageDisposable?.dispose();
 		this.onDidChangeLocalStorageDisposable = undefined;
 	}
 
 	// this fires every time local storage changes, but we
 	// don't want to check more often than once a second
-	private async onDidChangeLocalStorage(): Promise<void> {
+	private async onDidChangeLocalStorage (): Promise<void> {
 		const ellapsed = Date.now() - this.lastTimeChecked;
 
 		if (ellapsed > 1000) {
@@ -252,7 +252,7 @@ class LocalStorageURLCallbackProvider extends Disposable implements IURLCallback
 		}
 	}
 
-	private checkCallbacks(): void {
+	private checkCallbacks (): void {
 		let pendingCallbacks: Set<number> | undefined;
 
 		for (const id of this.pendingCallbacks) {
@@ -292,7 +292,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 
 	private static QUERY_PARAM_PAYLOAD = 'payload';
 
-	static create(config: IWorkbenchConstructionOptions & { folderUri?: UriComponents; workspaceUri?: UriComponents }) {
+	static create (config: IWorkbenchConstructionOptions & { folderUri?: UriComponents; workspaceUri?: UriComponents }) {
 		let foundWorkspace = false;
 		let workspace: IWorkspace;
 		let payload = Object.create(null);
@@ -366,7 +366,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 	) {
 	}
 
-	async open(workspace: IWorkspace, options?: { reuse?: boolean; payload?: object }): Promise<boolean> {
+	async open (workspace: IWorkspace, options?: { reuse?: boolean; payload?: object }): Promise<boolean> {
 		if (options?.reuse && !options.payload && this.isSame(this.workspace, workspace)) {
 			return true; // return early if workspace and environment is not changing and we are reusing window
 		}
@@ -390,7 +390,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 		return false;
 	}
 
-	private createTargetUrl(workspace: IWorkspace, options?: { reuse?: boolean; payload?: object }): string | undefined {
+	private createTargetUrl (workspace: IWorkspace, options?: { reuse?: boolean; payload?: object }): string | undefined {
 
 		// Empty
 		let targetHref: string | undefined = undefined;
@@ -439,7 +439,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 		return targetHref;
 	}
 
-	private isSame(workspaceA: IWorkspace, workspaceB: IWorkspace): boolean {
+	private isSame (workspaceA: IWorkspace, workspaceB: IWorkspace): boolean {
 		if (!workspaceA || !workspaceB) {
 			return workspaceA === workspaceB; // both empty
 		}
@@ -455,7 +455,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 		return false;
 	}
 
-	hasRemote(): boolean {
+	hasRemote (): boolean {
 		if (this.workspace) {
 			if (isFolderToOpen(this.workspace)) {
 				return this.workspace.folderUri.scheme === Schemas.vscodeRemote;
@@ -470,7 +470,7 @@ class WorkspaceProvider implements IWorkspaceProvider {
 	}
 }
 
-function doCreateUri(path: string, queryValues: Map<string, string>): URI {
+function doCreateUri (path: string, queryValues: Map<string, string>): URI {
 	let query: string | undefined = undefined;
 
 	if (queryValues) {
@@ -501,9 +501,9 @@ function doCreateUri(path: string, queryValues: Map<string, string>): URI {
 	// Create workbench
 	create(document.body, {
 		...config,
-		settingsSyncOptions: config.settingsSyncOptions ? {
-			enabled: config.settingsSyncOptions.enabled,
-		} : undefined,
+		developmentOptions: {
+			...config.developmentOptions
+		},
 		workspaceProvider: WorkspaceProvider.create(config),
 		urlCallbackProvider: new LocalStorageURLCallbackProvider(config.callbackRoute),
 		credentialsProvider: config.remoteAuthority ? undefined : new LocalStorageCredentialsProvider() // with a remote, we don't use a local credentials provider

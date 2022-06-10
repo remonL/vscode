@@ -32,7 +32,7 @@ suite('CodeEditorWidget', () => {
 
 	test('onDidChangeModelLanguage', () => {
 		withTestCodeEditor('', {}, (editor, viewModel, instantiationService) => {
-			const languageService = instantiationService.get(ILanguageService);
+			const languageService = (instantiationService as any).get(ILanguageService);
 			const disposables = new DisposableStore();
 			disposables.add(languageService.registerLanguage({ id: 'testMode' }));
 
@@ -51,8 +51,8 @@ suite('CodeEditorWidget', () => {
 
 	test('onDidChangeModelLanguageConfiguration', () => {
 		withTestCodeEditor('', {}, (editor, viewModel, instantiationService) => {
-			const languageConfigurationService = instantiationService.get(ILanguageConfigurationService);
-			const languageService = instantiationService.get(ILanguageService);
+			const languageConfigurationService = (instantiationService as any).get(ILanguageConfigurationService);
+			const languageService = (instantiationService as any).get(ILanguageService);
 			const disposables = new DisposableStore();
 			disposables.add(languageService.registerLanguage({ id: 'testMode' }));
 			viewModel.model.setMode('testMode');

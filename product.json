@@ -1,9 +1,9 @@
 {
-	"nameShort": "Code - OSS",
-	"nameLong": "Code - OSS",
-	"applicationName": "code-oss",
-	"dataFolderName": ".vscode-oss",
-	"win32MutexName": "vscodeoss",
+	"nameShort": "Code",
+	"nameLong": "Code",
+	"applicationName": "code",
+	"dataFolderName": ".vscode",
+	"win32MutexName": "vscode",
 	"licenseName": "MIT",
 	"licenseUrl": "https://github.com/microsoft/vscode/blob/main/LICENSE.txt",
 	"serverGreeting": [],
@@ -21,12 +21,37 @@
 	"win32x64UserAppId": "{{CC6B787D-37A0-49E8-AE24-8559A032BE0C}",
 	"win32arm64UserAppId": "{{3AEBF0C8-F733-4AD4-BADE-FDB816D53D7B}",
 	"win32AppUserModelId": "Microsoft.CodeOSS",
-	"win32ShellNameShort": "C&ode - OSS",
-	"darwinBundleIdentifier": "com.visualstudio.code.oss",
-	"linuxIconName": "com.visualstudio.code.oss",
+	"win32ShellNameShort": "C&ode",
+	"darwinBundleIdentifier": "com.visualstudio.code",
+	"linuxIconName": "com.visualstudio.code",
 	"licenseFileName": "LICENSE.txt",
 	"reportIssueUrl": "https://github.com/microsoft/vscode/issues/new",
 	"urlProtocol": "code-oss",
+	"extensionAllowedProposedApi": [
+		"ms-vscode.vscode-js-profile-flame",
+		"ms-vscode.vscode-js-profile-table",
+		"GitHub.remotehub",
+		"GitHub.remotehub-insiders",
+		"GitHub.vscode-pull-request-github-insiders",
+		"GitHub.vscode-pull-request-github",
+		"Github.codespaces",
+		"ms-python.python",
+		"ms-toolsai.jupyter",
+		"ms-vscode.js-debug-nightly",
+		"ms-vscode.js-debug",
+		"ms-vscode.lsif-browser",
+		"ms-vscode.vscode-js-profile-flame",
+		"ms-vscode.vscode-js-profile-table",
+		"ms-vscode.vscode-selfhost-test-provider",
+		"ms-vsliveshare.vsliveshare",
+		"github.copilot",
+		"Github.copilot",
+		"dbaeumer.vscode-eslint",
+		"genuitecllc.codetogether",
+		"vscode.microsoft-authentication",
+		"vscode.github",
+		"vscode.Github"
+	],
 	"webviewContentExternalBaseUrlTemplate": "https://{{uuid}}.vscode-cdn.net/insider/3c8520fab514b9f56070214496b26ff68d1b1cb5/out/vs/workbench/contrib/webview/browser/pre/",
 	"builtInExtensions": [
 		{
@@ -74,5 +99,13 @@
 				"publisherDisplayName": "Microsoft"
 			}
 		}
-	]
+	],
+	"extensionsGallery": {
+		"serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
+		"itemUrl": "https://marketplace.visualstudio.com/_apis/public/item",
+		"resourceUrlTemplate": "{origin}/proxy/{publisher}.vscode-unpkg.net/{publisher}/{name}/{version}/{path}",
+		"controlUrl": "",
+		"recommendationsUrl": ""
+	},
+	"linkProtectionTrustedDomains": ["https://marketplace.visualstudio.com"]
 }

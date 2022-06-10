@@ -14,7 +14,7 @@ import 'vs/workbench/common/configurationMigration';
 const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
 
 // Configuration
-(function registerConfiguration(): void {
+(function registerConfiguration (): void {
 
 	// Workbench
 	registry.registerConfiguration({

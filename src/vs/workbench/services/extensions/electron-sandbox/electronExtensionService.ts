@@ -116,7 +116,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		});
 	}
 
-	private _isLocalWebWorkerEnabled(): [boolean, boolean] {
+	private _isLocalWebWorkerEnabled (): [boolean, boolean] {
 		let isEnabled: boolean;
 		let isLazy: boolean;
 		if (this._environmentService.isExtensionDevelopment && this._environmentService.extensionDevelopmentKind?.some(k => k === 'web')) {
@@ -138,7 +138,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		return [isEnabled, isLazy];
 	}
 
-	protected _scanSingleExtension(extension: IExtension): Promise<IExtensionDescription | null> {
+	protected _scanSingleExtension (extension: IExtension): Promise<IExtensionDescription | null> {
 		if (extension.location.scheme === Schemas.vscodeRemote) {
 			return this._remoteAgentService.scanSingleExtension(extension.location, extension.type === ExtensionType.System);
 		}
@@ -146,14 +146,14 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		return this._extensionScanner.scanSingleExtension(extension.location.fsPath, extension.type === ExtensionType.System);
 	}
 
-	private async _scanAllLocalExtensions(): Promise<IExtensionDescription[]> {
+	private async _scanAllLocalExtensions (): Promise<IExtensionDescription[]> {
 		return flatten(await Promise.all([
 			this._extensionScanner.scannedExtensions,
 			this._scanWebExtensions(),
 		]));
 	}
 
-	protected _createLocalExtensionHostDataProvider(isInitialStart: boolean, desiredRunningLocation: ExtensionRunningLocation): ILocalProcessExtensionHostDataProvider & IWebWorkerExtensionHostDataProvider {
+	protected _createLocalExtensionHostDataProvider (isInitialStart: boolean, desiredRunningLocation: ExtensionRunningLocation): ILocalProcessExtensionHostDataProvider & IWebWorkerExtensionHostDataProvider {
 		return {
 			getInitData: async (): Promise<ILocalProcessExtensionHostInitData & IWebWorkerExtensionHostInitData> => {
 				if (isInitialStart) {
@@ -180,7 +180,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		};
 	}
 
-	private _createRemoteExtensionHostDataProvider(remoteAuthority: string): IRemoteExtensionHostDataProvider {
+	private _createRemoteExtensionHostDataProvider (remoteAuthority: string): IRemoteExtensionHostDataProvider {
 		return {
 			remoteAuthority: remoteAuthority,
 			getInitData: async () => {
@@ -190,13 +190,13 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		};
 	}
 
-	protected _pickExtensionHostKind(extensionId: ExtensionIdentifier, extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference): ExtensionHostKind | null {
+	protected _pickExtensionHostKind (extensionId: ExtensionIdentifier, extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference): ExtensionHostKind | null {
 		const result = ElectronExtensionService.pickExtensionHostKind(extensionKinds, isInstalledLocally, isInstalledRemotely, preference, Boolean(this._environmentService.remoteAuthority), this._enableLocalWebWorker);
 		this._logService.trace(`pickRunningLocation for ${extensionId.value}, extension kinds: [${extensionKinds.join(', ')}], isInstalledLocally: ${isInstalledLocally}, isInstalledRemotely: ${isInstalledRemotely}, preference: ${extensionRunningPreferenceToString(preference)} => ${extensionHostKindToString(result)}`);
 		return result;
 	}
 
-	public static pickExtensionHostKind(extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference, hasRemoteExtHost: boolean, hasWebWorkerExtHost: boolean): ExtensionHostKind | null {
+	public static pickExtensionHostKind (extensionKinds: ExtensionKind[], isInstalledLocally: boolean, isInstalledRemotely: boolean, preference: ExtensionRunningPreference, hasRemoteExtHost: boolean, hasWebWorkerExtHost: boolean): ExtensionHostKind | null {
 		const result: ExtensionHostKind[] = [];
 		for (const extensionKind of extensionKinds) {
 			if (extensionKind === 'ui' && isInstalledLocally) {
@@ -235,7 +235,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		return (result.length > 0 ? result[0] : null);
 	}
 
-	protected _createExtensionHost(runningLocation: ExtensionRunningLocation, isInitialStart: boolean): IExtensionHost | null {
+	protected _createExtensionHost (runningLocation: ExtensionRunningLocation, isInitialStart: boolean): IExtensionHost | null {
 		switch (runningLocation.kind) {
 			case ExtensionHostKind.LocalProcess: {
 				return this._instantiationService.createInstance(SandboxLocalProcessExtensionHost, runningLocation, this._createLocalExtensionHostDataProvider(isInitialStart, runningLocation));
@@ -256,7 +256,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		}
 	}
 
-	protected override _onExtensionHostCrashed(extensionHost: IExtensionHostManager, code: number, signal: string | null): void {
+	protected override _onExtensionHostCrashed (extensionHost: IExtensionHostManager, code: number, signal: string | null): void {
 		const activatedExtensions = Array.from(this._extensionHostActiveExtensions.values()).filter(extensionId => extensionHost.containsExtension(extensionId));
 		super._onExtensionHostCrashed(extensionHost, code, signal);
 
@@ -302,7 +302,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		}
 	}
 
-	private _sendExtensionHostCrashTelemetry(code: number, signal: string | null, activatedExtensions: ExtensionIdentifier[]): void {
+	private _sendExtensionHostCrashTelemetry (code: number, signal: string | null, activatedExtensions: ExtensionIdentifier[]): void {
 		type ExtensionHostCrashClassification = {
 			owner: 'alexdima';
 			comment: 'The extension host has terminated unexpectedly';
@@ -344,7 +344,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 
 	// --- impl
 
-	private async _resolveAuthority(remoteAuthority: string): Promise<ResolverResult> {
+	private async _resolveAuthority (remoteAuthority: string): Promise<ResolverResult> {
 
 		const authorityPlusIndex = remoteAuthority.indexOf('+');
 		if (authorityPlusIndex === -1) {
@@ -389,7 +389,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		throw new RemoteAuthorityResolverError(bestErrorResult!.error.message, bestErrorResult!.error.code, bestErrorResult!.error.detail);
 	}
 
-	private async _getCanonicalURI(remoteAuthority: string, uri: URI): Promise<URI> {
+	private async _getCanonicalURI (remoteAuthority: string, uri: URI): Promise<URI> {
 
 		const authorityPlusIndex = remoteAuthority.indexOf('+');
 		if (authorityPlusIndex === -1) {
@@ -415,7 +415,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		throw new Error(`Cannot get canonical URI because no extension is installed to resolve ${getRemoteAuthorityPrefix(remoteAuthority)}`);
 	}
 
-	private async _resolveAuthorityAgain(): Promise<void> {
+	private async _resolveAuthorityAgain (): Promise<void> {
 		const remoteAuthority = this._environmentService.remoteAuthority;
 		if (!remoteAuthority) {
 			return;
@@ -434,7 +434,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		}
 	}
 
-	protected async _scanAndHandleExtensions(): Promise<void> {
+	protected async _scanAndHandleExtensions (): Promise<void> {
 		this._extensionScanner.startScanningExtensions();
 
 		const remoteAuthority = this._environmentService.remoteAuthority;
@@ -535,7 +535,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		await this._startLocalExtensionHost(remoteAuthority, remoteEnv, remoteExtensions);
 	}
 
-	private async _startLocalExtensionHost(remoteAuthority: string | undefined = undefined, remoteEnv: IRemoteAgentEnvironment | null = null, remoteExtensions: IExtensionDescription[] = []): Promise<void> {
+	private async _startLocalExtensionHost (remoteAuthority: string | undefined = undefined, remoteEnv: IRemoteAgentEnvironment | null = null, remoteExtensions: IExtensionDescription[] = []): Promise<void> {
 		// Ensure that the workspace trust state has been fully initialized so
 		// that the extension host can start with the correct set of extensions.
 		await this._workspaceTrustManagementService.workspaceTrustInitialized;
@@ -585,12 +585,12 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		}
 	}
 
-	private _startExtensionHost(extensionHostManager: IExtensionHostManager, _extensions: IExtensionDescription[]): void {
+	private _startExtensionHost (extensionHostManager: IExtensionHostManager, _extensions: IExtensionDescription[]): void {
 		const extensions = this._filterByExtensionHostManager(_extensions, extensionHostManager);
 		extensionHostManager.start(this._registry.getAllExtensionDescriptions(), extensions.map(extension => extension.identifier));
 	}
 
-	public _onExtensionHostExit(code: number): void {
+	public _onExtensionHostExit (code: number): void {
 		// Dispose everything associated with the extension host
 		this.stopExtensionHosts();
 
@@ -603,7 +603,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 		}
 	}
 
-	private async _handleNoResolverFound(remoteAuthority: string): Promise<boolean> {
+	private async _handleNoResolverFound (remoteAuthority: string): Promise<boolean> {
 		const remoteName = getRemoteName(remoteAuthority);
 		const recommendation = this._productService.remoteExtensionTips?.[remoteName];
 		if (!recommendation) {
@@ -667,7 +667,7 @@ export abstract class ElectronExtensionService extends AbstractExtensionService 
 	}
 }
 
-function getRemoteAuthorityPrefix(remoteAuthority: string): string {
+function getRemoteAuthorityPrefix (remoteAuthority: string): string {
 	const plusIndex = remoteAuthority.indexOf('+');
 	if (plusIndex === -1) {
 		return remoteAuthority;
@@ -686,7 +686,7 @@ class RestartExtensionHostAction extends Action2 {
 		});
 	}
 
-	run(accessor: ServicesAccessor): void {
+	run (accessor: ServicesAccessor): void {
 		accessor.get(IExtensionService).restartExtensionHost();
 	}
 }
