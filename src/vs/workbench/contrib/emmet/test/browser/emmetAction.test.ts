@@ -25,7 +25,7 @@ suite('Emmet', () => {
 
 	test('Get language mode and parent mode for emmet', () => {
 		withTestCodeEditor([], {}, (editor, viewModel, instantiationService) => {
-			const languageService = instantiationService.get(ILanguageService);
+			const languageService = (instantiationService as any).get(ILanguageService);
 
 			const disposables = new DisposableStore();
 			disposables.add(languageService.registerLanguage({ id: 'markdown' }));

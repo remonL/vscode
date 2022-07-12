@@ -1615,6 +1615,14 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 			this._themeService
 		);
 
+		listenersToRemove.push(model.onDidChangeDecorations((e) => this._onDidChangeModelDecorations.fire(e)));
+		listenersToRemove.push(model.onDidChangeLanguage((e) => {
+			this._domElement.setAttribute('data-mode-id', model.getLanguageId());
+			this._onDidChangeModelLanguage.fire(e);
+		}));
+		listenersToRemove.push(model.onDidChangeLanguageConfiguration((e) => this._onDidChangeModelLanguageConfiguration.fire(e)));
+		listenersToRemove.push(model.onDidChangeContent((e) => this._onDidChangeModelContent.fire(e)));
+		listenersToRemove.push(model.onDidChangeOptions((e) => this._onDidChangeModelOptions.fire(e)));
 		// Someone might destroy the model from under the editor, so prevent any exceptions by setting a null model
 		listenersToRemove.push(model.onWillDispose(() => this.setModel(null)));
 
@@ -1669,25 +1677,6 @@ export class CodeEditorWidget extends Disposable implements editorBrowser.ICodeE
 
 					break;
 				}
-				case OutgoingViewModelEventKind.ModelDecorationsChanged:
-					this._onDidChangeModelDecorations.fire(e.event);
-					break;
-				case OutgoingViewModelEventKind.ModelLanguageChanged:
-					this._domElement.setAttribute('data-mode-id', model.getLanguageId());
-					this._onDidChangeModelLanguage.fire(e.event);
-					break;
-				case OutgoingViewModelEventKind.ModelLanguageConfigurationChanged:
-					this._onDidChangeModelLanguageConfiguration.fire(e.event);
-					break;
-				case OutgoingViewModelEventKind.ModelContentChanged:
-					this._onDidChangeModelContent.fire(e.event);
-					break;
-				case OutgoingViewModelEventKind.ModelOptionsChanged:
-					this._onDidChangeModelOptions.fire(e.event);
-					break;
-				case OutgoingViewModelEventKind.ModelTokensChanged:
-					this._onDidChangeModelTokens.fire(e.event);
-					break;
 
 			}
 		}));

@@ -62,31 +62,31 @@ export class TelemetryService extends Disposable implements ITelemetryService {
 		}
 	}
 
-	setExperimentProperty(name: string, value: string): void {
+	setExperimentProperty (name: string, value: string): void {
 		return this.impl.setExperimentProperty(name, value);
 	}
 
-	get telemetryLevel(): IObservableValue<TelemetryLevel> {
+	get telemetryLevel (): IObservableValue<TelemetryLevel> {
 		return this.impl.telemetryLevel;
 	}
 
-	publicLog(eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void> {
+	publicLog (eventName: string, data?: ITelemetryData, anonymizeFilePaths?: boolean): Promise<void> {
 		return this.impl.publicLog(eventName, data, anonymizeFilePaths);
 	}
 
-	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean) {
+	publicLog2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never> (eventName: string, data?: StrictPropertyCheck<T, E>, anonymizeFilePaths?: boolean) {
 		return this.publicLog(eventName, data as ITelemetryData, anonymizeFilePaths);
 	}
 
-	publicLogError(errorEventName: string, data?: ITelemetryData): Promise<void> {
+	publicLogError (errorEventName: string, data?: ITelemetryData): Promise<void> {
 		return this.impl.publicLog(errorEventName, data);
 	}
 
-	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never>(eventName: string, data?: StrictPropertyCheck<T, E>) {
+	publicLogError2<E extends ClassifiedEvent<T> = never, T extends GDPRClassification<T> = never> (eventName: string, data?: StrictPropertyCheck<T, E>) {
 		return this.publicLogError(eventName, data as ITelemetryData);
 	}
 
-	getTelemetryInfo(): Promise<ITelemetryInfo> {
+	getTelemetryInfo (): Promise<ITelemetryInfo> {
 		return this.impl.getTelemetryInfo();
 	}
 }

@@ -15,7 +15,7 @@ import { LifecyclePhase } from 'vs/workbench/services/lifecycle/common/lifecycle
 const registry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
 
 // Configuration
-(function registerConfiguration(): void {
+(function registerConfiguration (): void {
 
 	// Migration support
 	Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(ConfigurationMigrationWorkbenchContribution, LifecyclePhase.Eventually);
